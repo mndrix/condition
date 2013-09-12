@@ -1,6 +1,9 @@
 name(condition).
 version('0.0.1').
-title('').
+title('Condition system a la Common Lisp').
+
+requires(lambda).
+
 author('Michael Hendricks','michael@ndrix.org').
 packager('Michael Hendricks','michael@ndrix.org').
 maintainer('Michael Hendricks','michael@ndrix.org').
