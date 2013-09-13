@@ -23,7 +23,7 @@ A [condition system](http://www.nhplace.com/kent/Papers/Condition-Handling-2001.
 
 Think of the process of signaling and handling as analogous to finding a fork in a road that you do not commonly travel.  You don't know which way to go, so you make known your dilemma (signal a condition).  Various sources of wisdom (handlers) present themselves, and you consult each, placing your trust in them because you have no special knowledge yourself of what to do.  Not all sources of wisdom are experts on every topic, so some may decline to help, some may disagree.  Using those sources of wisdom, you act.  The situation has been handled.
 
-In the following description, condition system terminology is in *bold*.
+In the following description, condition system terminology is *highlighted*.
 
 When a predicate encounters a problematic situation and doesn't know how to proceed, it can *signal* a *condition* (instead of throwing an exception).  A *handler* higher up in the call stack can respond to this condition with a *restart*.  Unlike with exceptions, the call stack is never unwound so the precise context of the error is preserved in case it's needed for continuing the computation.  A condition communicates information from a signaler to a handler.  Based on this information, the handler sends a restart which communicates in the opposite direction.
 
