@@ -2,7 +2,7 @@
                      , handle/3
                      , signal/2
                      ]).
-%:- use_module(library(lambda)).
+:- use_module(library(lambda)).
 
 %%  signal(+Condition, -Restart) is nondet.
 %
@@ -35,9 +35,8 @@
 %   For example,
 %
 %       handle(stuff, oops(_), carry_on)
-handle(_Goal, _Condition, _Restart) :-
-    %handle(Goal, \C^R^(C=Condition -> R=Restart)).
-    fail.
+handle(Goal, Condition, Restart) :-
+    handle(Goal, \C^R^(C=Condition -> R=Restart)).
 
 
 %%  handle(:Goal, +Restarter)

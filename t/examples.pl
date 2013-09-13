@@ -10,8 +10,14 @@ a1(X) :-
 a2(X) :-
     handle(b(X), restarter_foo).
 
+a3(X) :-
+    handle(b2(X), restarter_oops).
+
 b(X) :-
     handle(c(X), restarter_oops).
+
+b2(X) :-
+    handle(c(X), oops(_), shortcut).
 
 c(Restarts) :-
     findall( Restart
@@ -35,3 +41,11 @@ c(Restarts) :-
 'no handlers present' :-
     c(X),
     X == [].
+
+'using handle/3 variant' :-
+    b2(X),
+    X == [shortcut].
+
+'multiple handlers match' :-
+    a3(X),
+    X == [shortcut, ok].  % innermost first
