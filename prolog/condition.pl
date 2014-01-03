@@ -35,6 +35,7 @@
 %   For example,
 %
 %       handle(stuff, oops(_), carry_on)
+:- meta_predicate condition:handle(0,?,?).
 handle(Goal, Condition, Restart) :-
     handle(Goal, \C^R^(C=Condition -> R=Restart)).
 
@@ -60,6 +61,7 @@ handle(Goal, Condition, Restart) :-
 %   chance to handle it before it propagates outward.  Of course, if
 %   a signaler looks at multiple solutions, other handlers will be
 %   executed too.
+:- meta_predicate condition:handle(0,2).
 handle(Goal, Restarter) :-
     setup_call_cleanup(
         condition:asserta((signal(C,R) :- call(Restarter,C,R)), Ref),
