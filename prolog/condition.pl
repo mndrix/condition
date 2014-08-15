@@ -8,7 +8,7 @@
 %
 %   Signal a Condition and allow handlers to bind Restart.
 %   This predicate is the mechanism
-%   by which a piece of code indicates that it doesn't know how to
+%   by which code indicates that it doesn't know how to
 %   proceed and is requesting assistance in choosing a path forward.
 %
 %   It's possible for ancestors to disagree about Restart (aka,
@@ -27,13 +27,12 @@
 
 %%  handle(:Goal, +Condition, +Restart)
 %
-%   Convenience on top of handle/2. Behaves exactly like handle/2 but
+%   Like handle/2 with unification as the restarter.  This
 %   builds a restarter which only uses Restart if the condition unifies
 %   with Condition. It addresses the common situation where one knows
-%   both Condition and Restart before calling Goal.
+%   both Condition and Restart before calling Goal.  For example,
 %
-%   For example,
-%
+%       % if stuff signals oops(_) then restart with carry_on
 %       handle(stuff, oops(_), carry_on)
 :- meta_predicate condition:handle(0,?,?).
 handle(Goal, Condition, Restart) :-
