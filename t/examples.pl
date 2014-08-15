@@ -57,3 +57,15 @@ c(Restarts) :-
 'multiple handlers match' :-
     a3(X),
     X == [shortcut, ok].  % innermost first
+
+
+'add and remove handlers' :-
+    add_handler(restarter_foo, Ref),
+    signal(foo, R1),
+    signal(foo, R2),
+    rm_handler(Ref),
+
+    signal(foo, nothing, R3),
+    R1 == bar,
+    R2 == bar,
+    R3 == nothing.

@@ -2,6 +2,8 @@
                      , handle/3
                      , signal/2
                      , signal/3
+                     , add_handler/2
+                     , rm_handler/1
                      ]).
 :- use_module(library(lambda)).
 
@@ -85,7 +87,33 @@ handle(Goal, Condition, Restart) :-
 :- meta_predicate condition:handle(0,2).
 handle(Goal, Restarter) :-
     setup_call_cleanup(
-        condition:asserta((handler(C,R) :- call(Restarter,C,R)), Ref),
+        add_handler(Restarter,Ref),
         Goal,
-        erase(Ref)
+        rm_handler(Ref)
     ).
+
+
+%% add_handler(+Restarter, -Ref) is det.
+%
+%  Add a handler for all subsequent signals.  Used in combination with
+%  rm_handler/1.  This can be helpful for setting a handler for
+%  multiple goals.  For example,
+%
+%      add_handler(restarter, Ref),
+%      foo(a),  % signals handled by restarter/2
+%      foo(b),  % ditto
+%      rm_handler(Ref).
+%
+%  Of course, to be safe, one should use the built in setup_call_cleanup/3
+%  or cleanup/1 provided by library(sweet).  That makes sure the handler
+%  is removed no matter how foo/1 misbehaves.
+add_handler(Restarter,Ref) :-
+    condition:asserta((handler(C,R) :- call(Restarter,C,R)), Ref).
+
+
+%% rm_handler(+Ref) is det.
+%
+%  Remove a handler from all subsequent signals.  Used in combination with
+%  add_handler/2.
+rm_handler(Ref) :-
+    erase(Ref).
