@@ -53,7 +53,7 @@ A condition system decouples all participating software components by agreeing o
 
 # Changes in this Version
 
-  * Add meta_predicate declarations
+See History.md file.
 
 # Installation
 

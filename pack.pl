@@ -1,8 +1,8 @@
 name(condition).
 title('Condition system a la Common Lisp').
 
-version('0.0.2').
-download('http://packs.ndrix.com/condition/condition-0.0.2.tgz').
+version('0.1.0').
+download('http://packs.ndrix.com/condition/condition-0.1.0.tgz').
 
 requires(lambda).
 
