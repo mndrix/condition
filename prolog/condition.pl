@@ -1,10 +1,14 @@
 :- module(condition, [ handle/2
                      , handle/3
                      , signal/2
+                     , signal/3
                      ]).
 :- use_module(library(lambda)).
 
-%%  signal(+Condition, -Restart) is nondet.
+% handle/2 adds clauses to this predicate dynamically
+:- thread_local handler/2.
+
+%%  signal(+Condition, -Restart) is multi.
 %
 %   Signal a Condition and allow handlers to bind Restart.
 %   This predicate is the mechanism
@@ -13,16 +17,34 @@
 %
 %   It's possible for ancestors to disagree about Restart (aka,
 %   different values on backtracking). In this scenario, it's acceptable
-%   to choose the first Restart, iterate each Restart in turn or
-%   consider all Restart values simultaneously (quorum?).
-%   It's also possible for no ancestor to have an opinion
-%   (aka, failing without any solutions).
+%   to choose the first (innermost) Restart, iterate each Restart in turn or
+%   consider all Restart values together (quorum?).
+%
+%   If no ancestor has an opinion, signal/2 calls =|throw(Condition)|=.
+%   If you'd rather use a default value for Restart in this case,
+%   use signal/3 instead.
 %
 %   It's quite common for signal/2 to leave dangling, `false`
 %   choicepoints. If you're only interested in the first Restart value,
 %   use once/1 or a similar construct to explicitly state that intent.
-:- thread_local signal/2.
-% handle_condition/{2,3} adds clauses to this predicate dynamically
+signal(Condition,Restart) :-
+    ( handler(Condition,Restart) *-> true ; throw(Condition) ).
+
+
+%% signal(+Condition,+Default,-Restart) is multi.
+%
+%  Like signal/2 but unifies Restart with Default if nobody handles
+%  this Condition.  It can be helfpul to use Restart as its own default
+%  allowing you to check =|var(Restart)|= to see if a restart was provided.
+%  For example,
+%
+%      signal(oops, Restart, Restart),
+%      ( var(Restart) ->
+%          print_message(warning,"Nobody provided a restart")
+%      ; ...
+%      )
+signal(Condition,Default,Restart) :-
+    catch(signal(Condition,Restart),Condition,Restart=Default).
 
 
 %%  handle(:Goal, +Condition, +Restart)
@@ -63,7 +85,7 @@ handle(Goal, Condition, Restart) :-
 :- meta_predicate condition:handle(0,2).
 handle(Goal, Restarter) :-
     setup_call_cleanup(
-        condition:asserta((signal(C,R) :- call(Restarter,C,R)), Ref),
+        condition:asserta((handler(C,R) :- call(Restarter,C,R)), Ref),
         Goal,
         erase(Ref)
     ).

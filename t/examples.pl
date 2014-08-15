@@ -38,9 +38,17 @@ c(Restarts) :-
     a2(X),
     X == [ok].
 
-'no handlers present' :-
-    c(X),
-    X == [].
+'no handlers present'(throws(oops(ok))) :-
+    c(_).
+
+'no handlers present: default' :-
+    Condition = obscure,
+    signal(Condition,default,Restart),
+    Restart == default.
+
+'no handlers present: var' :-
+    signal(obscure,Restart,Restart),
+    var(Restart).
 
 'using handle/3 variant' :-
     b2(X),
